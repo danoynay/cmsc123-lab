@@ -12,6 +12,19 @@ public class LinkedList<E> implements Collection<E> {
     }
   }
 
+   /* TEMPLATE:
+     Fields:
+     ... this.data ...         -- E
+     ... this.next ...        -- Node
+     
+     Methods:
+     ... public boolean add(E, int) ...   -- boolean
+     ... public boolean remove(int) ...   -- boolean
+     ... public int size() ...            -- int
+     ... public Iterator<E> iterator()... -- E
+  */
+
+  
   Node head = null;
   int size = 0;
   
