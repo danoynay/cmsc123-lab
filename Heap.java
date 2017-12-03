@@ -1,5 +1,3 @@
-            /* ............... START ............... */
-                
 public class JavaMinHeapExample {
 
 	private int[] Heap;
@@ -104,5 +102,3 @@ public class JavaMinHeapExample {
 		System.out.println("The Min val is " + minHeap.remove());
 	}
 }
-
-                /* ............... END ............... */
