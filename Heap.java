@@ -1,138 +1,151 @@
-public class JavaMinHeapExample {
+import java.lang.IllegalArgumentException;
 
- private int[] Heap;
- private int size;
- private int maxsize;
-
- private static final int FRONT = 1;
-
- public JavaMinHeapExample(int maxsize) {
-  this.maxsize = maxsize;
-  this.size = 0;
-  Heap = new int[this.maxsize + 1];
-  Heap[0] = Integer.MIN_VALUE;
- }
-
- // int -> int
- // accessing the value in the parent node
- private int parent(int pos) {
-  return pos / 2;
- }
-
- // int -> int
- // getting the index of the left child
- private int leftChild(int pos) {
-  return (2 * pos);
- }
-
- // int -> int
- // getting the index of the right child
- private int rightChild(int pos) {
-  return (2 * pos) + 1;
- }
-
- // int -> boolean
- // return true if the given node is a leaf otherwise, false 
- private boolean isLeaf(int pos) {
-  if (pos >= (size / 2) && pos <= size) {
-   return true;
+class Heap {
+  int[] heap; 
+  int maxSize; 
+  int size; 
+  
+  Heap(int maxSize) {
+    this.size = 0;
+    heap = new int[maxSize];
+    heap[0] = Integer.MIN_VALUE;
   }
-  return false;
- }
-
- // int, int -> void
- // swap the nodes/children
- private void swap(int fpos, int spos) {
-  int tmp;
-  tmp = Heap[fpos];
-  Heap[fpos] = Heap[spos];
-  Heap[spos] = tmp;
- }
-
- // int -> void
- // Heapifying/or sorting the values in the heap.
- private void minHeapify(int pos) {
-  if (!isLeaf(pos)) {
-   if (Heap[pos] > Heap[leftChild(pos)] || Heap[pos] > Heap[rightChild(pos)]) {
-    if (Heap[leftChild(pos)] < Heap[rightChild(pos)]) {
-     swap(pos, leftChild(pos));
-     minHeapify(leftChild(pos));
-    } else {
-     swap(pos, rightChild(pos));
-     minHeapify(rightChild(pos));
+  
+    // int -> void
+    // and inserts it to the bottom of the heap.
+    public void add(int value) {
+      size++;
+      heap[size] = value;
+      bubbleUp();
     }
-   }
+    
+    //  -> int
+    // removes the smallest value in the heap then returns it.
+    public int remove() {
+      int poppedItem = heap[1];
+      
+        heap[1] = heap[size];
+        heap[size] = 0;
+        bubbleDown(1);
+      return poppedItem;
+    }
+
+    // -> void
+    // places the newly-inserted valuein its correct position.
+    protected void bubbleUp() {
+      int childIndex = size;
+      
+      while(heap[childIndex] < heap[parent(childIndex)]) {
+        swap(childIndex, parent(childIndex));
+        childIndex = parent(childIndex);
+      }
+    }
+    
+    // int -> void
+    // places the value, which is the root, in its correct position.
+    protected void bubbleDown(int index) {
+      if(!isLeaf(index)) {
+        if(heap[index] > heap[leftChild(index)] || heap[index] > heap[rightChild(index)]) {
+          if(heap[leftChild(index)] < heap[rightChild(index)]) {
+            swap(index, leftChild(index));
+            bubbleDown(leftChild(index));
+          }
+          else {
+            swap(index, rightChild(index));
+            bubbleDown(rightChild(index));
+          }
+        }
+      }
+    }
+    
+    // int, int -> void
+    // swaps the parent's position with its child's. 
+    protected void swap(int childIndex, int parentIndex) {
+      int tmp = heap[parentIndex];
+      heap[parentIndex] = heap[childIndex];
+      heap[childIndex] = tmp;
+    }
+    
+    // -> void
+    // prints the values of the Heap
+    public void display() {
+      for(int i = 1; i <= size; i++) {
+        System.out.print(heap[i] + " ");
+      }
+      System.out.println();
+    }
+////////////////////////////TRAVERSALS//////////////////////////////////////
+    // -> void
+    // preorder traversal
+    public void preorder() {
+      int index = 1;
+      preorder(index);
+      System.out.println();
+    }
+      // that is, root -> leftChild -> rightChild.
+      protected void preorder(int index) {
+        if(index > size) {
+          return;
+        }
+        System.out.print(heap[index] + " ");
+        preorder(leftChild(index));
+        preorder(rightChild(index));
+    }
+    
+    // -> void
+    // inorder traversal
+    public void inorder() {
+      int index = 1;
+      inorder(index);
+      System.out.println();
+    }
+
+      // that is, leftChild -> root -> rightChild.
+      protected void inorder(int index) {
+        if(index > size) {
+          return;
+        }
+        inorder(leftChild(index));
+        System.out.print(heap[index] + " ");
+        inorder(rightChild(index));
+    }
+    
+    // -> void
+    //  postorder traversal
+    public void postorder() {
+      int index = 1;
+      postorder(index);
+      System.out.println();
+    }
+
+    // that is, leftChild ->rightChild -> root.
+    protected void postorder(int index) {
+      if(index > size) {
+        return;
+      }
+      postorder(leftChild(index));
+      postorder(rightChild(index));
+      System.out.print(heap[index] + " ");
+    }
+    
+    // int -> boolean
+    // returns true if an index is a leaf, false otherwise.
+    protected boolean isLeaf(int i) {
+      return ((i >= (size / 2)) && (i <= size));
+    }
+    
+    // fumction which returns the parent's postion
+    protected int parent(int i) {
+      return i / 2;
+    }
+    
+    // fumction which returns the left child's postion
+    protected int leftChild(int i) {
+      return 2 * i;
+    }
+    
+    // fumction which returns the right child's postion
+    protected int rightChild(int i) {
+      return 2 * i + 1;
+    }
   }
- }
-
- // int -> void
- // inserting/adding a value in the tree
- public void insert(int element) {
-  Heap[++size] = element;
-  int current = size;
-
-  while (Heap[current] < Heap[parent(current)]) {
-   swap(current, parent(current));
-   current = parent(current);
-  }
- }
- 
- // -> printing the values in the tree
- public void print() {
-  for (int i = 1; i <= size / 2; i++) {
-   System.out.print(
-     " PARENT : " + Heap[i] + " LEFT CHILD : " + Heap[2 * i] + " RIGHT CHILD :" + Heap[2 * i + 1]);
-   System.out.println();
-  }
- }
-
- // -> void
- // identifying the smallest value in the tree
- public void minHeap() {
-  for (int pos = (size / 2); pos >= 1; pos--) {
-   minHeapify(pos);
-  }
- }
-
- // -> int
- // remove and return the smallest value
- public int remove() {
-  int popped = Heap[FRONT];
-  Heap[FRONT] = Heap[size--];
-  minHeapify(FRONT);
-  return popped;
- }
-
- public static void main(String... arg) {
-  System.out.println("The Min Heap is ");
-  JavaMinHeapExample minHeap = new JavaMinHeapExample(15);
-  minHeap.insert(5);
-  minHeap.insert(3);
-  minHeap.insert(17);
-  minHeap.insert(10);
-  minHeap.insert(84);
-  minHeap.insert(19);
-  minHeap.insert(6);
-  minHeap.insert(22);
-  minHeap.insert(9);
-  minHeap.minHeap();
-  
-  /*
-   *          (3)
-   *        /    \
-   *     (5)      (6)
-   *    /  \      /  \
-   *  (9)  (84) (19) (17)
-   *  / \
-   *(22) (10)
-  */
-  
-  //printing the values in heap tree
-  minHeap.print();
-  //printing the smallest number in the heap tree
-  System.out.println("The Min val is " + minHeap.remove());
-  
-  //Printing the new tree with removed the smallest number
-  minHeap.print();
- }
-}
